@@ -323,6 +323,7 @@ class Miniview {
         this._settings = _getSettings();
         this._showme = this._settings.get_boolean('showme');
         this._showind = this._settings.get_boolean('showind');
+        this._windowNameFilter = this._settings.get_string('window-name-filter');
         this._settingsChangedId = this._settings.connect('changed', this._settingsChanged.bind(this));
         Main.wm.addKeybinding('toggle-miniview', this._settings, Meta.KeyBindingFlags.NONE, Shell.ActionMode.NORMAL, this._toggleMiniview.bind(this));
 
@@ -352,7 +353,7 @@ class Miniview {
         this._windowList = [];
         for (let i = 0; i < baseWindowList.length; i++) {
             let metaWin = baseWindowList[i].get_meta_window();
-            if (metaWin.get_window_type() == Meta.WindowType.NORMAL) {
+            if (metaWin.get_window_type() == Meta.WindowType.NORMAL && this._isAllowedWindow(metaWin)) {
                 this._windowList.push(metaWin);
             }
         }
@@ -457,6 +458,11 @@ class Miniview {
 
         // window already in the list?
         if (this.lookupIndex(metaWin) != -1) {
+            return;
+        }
+
+
+        if (!this._isAllowedWindow(metaWin)) {
             return;
         }
 
@@ -574,7 +580,16 @@ class Miniview {
     _settingsChanged() {
         this._showme = this._settings.get_boolean('showme');
         this._showind = this._settings.get_boolean('showind');
+        this._windowNameFilter = this._settings.get_string('window-name-filter');
         this._reflectState();
+    }
+
+    _isAllowedWindow(wnd) {
+        const title =  wnd.get_title();
+        if (this._windowNameFilter) {
+            return title && (title.indexOf(this._windowNameFilter) != -1);
+        }
+        return true;
     }
 }
 

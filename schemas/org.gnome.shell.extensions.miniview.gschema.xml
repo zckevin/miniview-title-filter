@@ -16,5 +16,10 @@
       <summary>Show Miniview</summary>
       <description>Show Miniview window.</description>
     </key>
+    <key name="window-name-filter" type="s">
+      <default>""</default>
+      <summary>Filter selected windows based on this filter</summary>
+      <description>Filter selected windows based on this filter</description>
+    </key>
   </schema>
 </schemalist>

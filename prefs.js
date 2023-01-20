@@ -82,10 +82,20 @@ class MiniviewPrefsWidget extends Gtk.Box {
             this._settings.set_boolean('showind', !ind);
         });
 
+        let filterEntry = new Gtk.Entry({
+            visibility: true,
+        });
+        let filterSettingsValue = this._settings.get_string('window-name-filter');
+        filterEntry.set_text(filterSettingsValue);
+        filterEntry.connect('activate', (tog) => {
+            this._settings.set_string('window-name-filter', filterEntry.text);
+        });
+
         // layout
         this._frame.add(this._treeview);
         this.add(this._frame);
         this.add(this._indicator);
+        this.add(filterEntry);
 
         // set up keybindings
         this._toggleRow = this._appendHotkey('toggle-miniview', _('Toggle Miniview'));
